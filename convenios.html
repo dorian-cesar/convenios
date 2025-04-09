@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Postulación a Convenio</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <link rel="icon" href="https://www.pullmanbus.cl/favicons/pullman-favicon.png">
+  <link rel="stylesheet" href="convenios.css">
+  <script src="regiones.js"></script>
+</head>
+
+<body class="p-4">
+  <img src="https://www.pullmanbus.cl/images/header-logo-yellow-arrow.svg" alt="" class="mb-3">
+
+  <!-- Modal de Selección de Convenio -->
+  <div class="modal fade" id="modalConvenio" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+    data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center p-4">
+        <h5 class="modal-title mb-3">¿Qué tipo de convenio deseas postular?</h5>
+        <div>
+          <button class="btn btn-primary m-2" onclick="seleccionarConvenio('Estudiantes')">Para Estudiantes</button>
+          <button class="btn btn-secondary m-2" onclick="seleccionarConvenio('Adulto Mayor')">Adulto Mayor</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="mb-3"><a href="https://www.pullmanbus.cl/">
+        <button>Volver</button>
+      </a></div>
+    <h2 id="tituloConvenio" class="text-center mb-4">Selecciona un convenio</h2>
+
+    <div class="row">
+      <div class="col-md-6">
+        <p id="textoInformativo">
+          <!-- El contenido se actualizará automáticamente según el convenio -->
+        </p>
+      </div>
+
+      <div class="col-md-6">
+        <form id="formEstudiante" enctype="multipart/form-data">
+          <input type="hidden" name="tipo_convenio" id="tipoConvenio">
+
+          <div class="mb-2"><input class="form-control" type="text" name="nombres" placeholder="Nombres" required></div>
+          <div class="mb-2"><input class="form-control" type="text" name="apellidos" placeholder="Apellidos" required>
+          </div>
+          <label for="">Fecha de nacimiento</label>
+          <div class="mb-2"><input class="form-control" type="date" name="fechaNacimiento" required></div>
+          <div class="mb-2"><input class="form-control" type="text" name="rut" placeholder="RUT" required></div>
+          <div class="mb-2">
+            <select class="form-control" name="sexo" required>
+              <option value="">Sexo</option>
+              <option value="Femenino">Femenino</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+          <div class="mb-2"><input class="form-control" type="text" name="telefono" placeholder="Teléfono" required>
+          </div>
+          <div class="mb-2"><input class="form-control" type="email" name="email" placeholder="Email" required></div>
+
+          <select id="regionSelect" name="region">
+            <option value="">Seleccione una región</option>
+          </select>
+
+          <select id="comunaSelect" name="comuna" disabled>
+            <option value="">Seleccione una comuna</option>
+          </select>
+
+          <label for="origen">Origen</label>
+          <select id="origen" name="origen">
+            <option value="">Cargando ciudades...</option>
+          </select>
+
+          <label for="destino">Destino</label>
+          <select id="destino" name="destino">
+            <option value="">Cargando ciudades...</option>
+          </select>
+
+
+          <div class="mb-2">
+            <label>Imagen de Cédula de Identidad</label>
+            <input class="form-control" type="file" name="cedula" accept=".jpg,.jpeg,.png,.pdf" required>
+          </div>
+          <div class="mb-2">
+            <label>Certificado de alumno regular</label>
+            <input class="form-control" type="file" name="certificado" accept=".jpg,.jpeg,.png,.pdf" required>
+          </div>
+
+          <button type="submit">Enviar Formulario</button>
+          <div class="text-center mt-3" id="loader" style="display: none;">
+            
+            <img decoding="async" src="https://i.gifer.com/ZZ5H.gif" alt="Enviando..." width="50">
+            <p>Enviando...</p>
+          </div>
+        </form>
+
+        <div id="mensaje" class="mt-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('formEstudiante');
+    const mensaje = document.getElementById('mensaje');
+    const titulo = document.getElementById('tituloConvenio');
+    const texto = document.getElementById('textoInformativo');
+    const tipoInput = document.getElementById('tipoConvenio');
+
+
+    const regionSelect = document.getElementById("regionSelect");
+    const comunaSelect = document.getElementById("comunaSelect");
+
+    // Llenar regiones
+    function cargarRegiones() {
+      regionesData.forEach(region => {
+        const option = document.createElement("option");
+        option.value = region.regionId;
+        option.textContent = region.regionName;
+        regionSelect.appendChild(option);
+      });
+    }
+
+    // Llenar comunas según la región seleccionada
+    function cargarComunas(regionId) {
+      comunaSelect.innerHTML = '<option value="">Seleccione una comuna</option>';
+      comunaSelect.disabled = true;
+
+      const region = regionesData.find(r => r.regionId == regionId);
+      if (region) {
+        const comunas = region.provinces.flatMap(p => p.communes);
+        comunas.forEach(comuna => {
+          const option = document.createElement("option");
+          option.value = comuna.communeId;
+          option.textContent = comuna.communeName;
+          comunaSelect.appendChild(option);
+        });
+        comunaSelect.disabled = false;
+      }
+    }
+
+    // Inicializar
+    document.addEventListener("DOMContentLoaded", () => {
+      cargarRegiones();
+
+      regionSelect.addEventListener("change", function () {
+        cargarComunas(this.value);
+      });
+    });
+
+
+    // Mostrar modal al cargar
+    window.onload = () => {
+      new bootstrap.Modal(document.getElementById('modalConvenio')).show();
+    };
+
+    // Elegir convenio
+    function seleccionarConvenio(tipo) {
+      tipoInput.value = tipo;
+      titulo.innerText = `Postulación a Convenio: ${tipo}`;
+
+      if (tipo === 'Estudiantes') {
+        texto.innerHTML = `
+        El beneficio estudiantil permite a los estudiantes de educación superior viajar a precios preferenciales, de lunes a domingo.
+        <br><br>Para acceder al beneficio, debes estar inscrito bajo este convenio llenando el siguiente formulario. También es posible inscribirte presencialmente en nuestras oficinas llevando la documentación necesaria: certificado de alumno regular y cédula de identidad.
+        <br><br>Posterior a esto enviaremos un email para validar la dirección de correo electrónico registrado.
+
+      `;
+      } else {
+        texto.innerHTML = `
+        El beneficio para adultos mayores permite acceder a descuentos exclusivos en viajes interurbanos.
+        <br><br>Para postular, debes ser mayor de 60 años y presentar tu cédula de identidad vigente.
+        <br><br>Completa el siguiente formulario y adjunta los documentos solicitados. Te contactaremos a través del correo electrónico registrado.
+      `;
+      }
+
+      const modal = bootstrap.Modal.getInstance(document.getElementById('modalConvenio'));
+      modal.hide();
+    }
+    document.addEventListener("DOMContentLoaded", () => {
+      const origenSelect = document.getElementById("origen");
+      const destinoSelect = document.getElementById("destino");
+
+      axios.get("https://preprod-pullmanbus.kupos.cl/api/uniq_cities")
+        .then(res => {
+          const ciudades = res.data;
+
+          // Limpiar selects
+          origenSelect.innerHTML = `<option value="">Selecciona ciudad de origen</option>`;
+          destinoSelect.innerHTML = `<option value="">Selecciona ciudad de destino</option>`;
+
+          ciudades.forEach(([nombreCompleto, id]) => {
+            const nombreCiudad = nombreCompleto.split(",")[0]; // Quitar ",Chile"
+
+            const optionOrigen = document.createElement("option");
+            optionOrigen.value = id;
+            optionOrigen.textContent = nombreCiudad;
+            origenSelect.appendChild(optionOrigen);
+
+            const optionDestino = document.createElement("option");
+            optionDestino.value = id;
+            optionDestino.textContent = nombreCiudad;
+            destinoSelect.appendChild(optionDestino);
+          });
+        })
+        .catch(error => {
+          console.error("Error al obtener ciudades:", error);
+          origenSelect.innerHTML = `<option value="">Error al cargar</option>`;
+          destinoSelect.innerHTML = `<option value="">Error al cargar</option>`;
+        });
+    });
+    // Enviar formulario con Axios
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      //const formData = new FormData(form);
+
+      const loader = document.getElementById('loader');
+      loader.style.display = 'block'; // Mostrar loader
+
+
+      const regionSelect = document.getElementById("regionSelect");
+      const comunaSelect = document.getElementById("comunaSelect");
+
+
+      const origenSelect = document.getElementById("origen");
+      const destinoSelect = document.getElementById("destino");
+
+
+
+      // Obtenemos el texto visible (nombre) en lugar del valor (ID)
+      const regionNombre = regionSelect.options[regionSelect.selectedIndex].text;
+      const comunaNombre = comunaSelect.options[comunaSelect.selectedIndex].text;
+
+      const origenNombre = origenSelect.options[origenSelect.selectedIndex].text;
+      const destinoNombre = destinoSelect.options[destinoSelect.selectedIndex].text;
+
+
+
+
+
+
+
+      // Inclúyelos en el objeto de datos
+      const formData = new FormData(document.getElementById("formEstudiante"));
+      formData.append('region_nombre', regionNombre);
+      formData.append('comuna_nombre', comunaNombre);
+
+      formData.append("origen_nombre", origenNombre);
+      formData.append("destino_nombre", destinoNombre);
+
+
+
+
+      axios.post('./php/procesar-formulario.php', formData)
+        .then(res => {
+          mensaje.innerHTML = `<div class="alert alert-success">${res.data}</div>`;
+          form.reset();
+        })
+        .catch(err => {
+          mensaje.innerHTML = `<div class="alert alert-danger">Error al enviar el formulario.</div>`;
+          console.error(err);
+        })
+        .finally(() => {
+          loader.style.display = 'none'; // Ocultar loader al finalizar
+        });
+    });
+  </script>
+
+
+
+</body>
+
+</html>

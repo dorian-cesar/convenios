@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Convenio Estudiantil</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+   
+      
+      margin: 0;
+      padding: 0px
+    }
+    h1 {
+      text-align: center;
+      color: #184eaf;
+      margin-bottom: 30px;
+    }
+    .container {
+    
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .info, .formulario {
+      flex: 1;
+      min-width: 350px;
+      background-color: #003BA7;
+      color:#fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+     color: #fa5e00;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    input[type="file"] {
+      padding: 0;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #fa5e00;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1f6391;
+
+    }
+    .formulario {
+        background-color: #fff;
+        color: #003BA7;
+    }
+    .nav {
+        height: 200px;
+        width: 100%;
+        background-color: #fa5e00;
+    }
+     h3 {
+        color: #fa5e00;
+     }
+
+  </style>
+</head>
+<body>
+    <div class="nav"> </div>
+
+  <h1>Convenio Estudiantil</h1>
+  
+
+  <div class="container">
+   
+    <!-- DIVISIÓN 1: Información -->
+    <div class="info">
+      <h2>Información del Beneficio</h2>
+      <p>El beneficio estudiantil permite a los estudiantes de educación superior viajar a precios preferenciales, de lunes a domingo.</p>
+      <p>Para acceder al beneficio, debes estar inscrito bajo este convenio llenando el siguiente formulario. También es posible inscribirte presencialmente en nuestras oficinas llevando la documentación necesaria: certificado de alumno regular y cédula de identidad.</p>
+
+      <h3>Formulario</h3>
+      <p>Completa el formulario que se encuentra a continuación y adjunta los documentos solicitados.</p>
+      <p>Posterior a esto enviaremos un email para validar la dirección de correo electrónico registrado.</p>
+
+      <h3>Revisión</h3>
+      <p>Al recibir la documentación, Turbus verificará si la solicitud cumple con los requisitos para optar al beneficio y tu postulación será "Aprobada" o "Rechazada" (solo en caso de existir alguna anomalía en tus documentos).</p>
+      <p>Los resultados de tu postulación serán notificados vía e-mail.</p>
+
+      <h3>Validación</h3>
+      <p>Si tu solicitud fue aprobada, activaremos tus datos en nuestros sistemas en un plazo máximo de 72 horas. Luego podrás viajar con Turbus haciendo uso de este beneficio.</p>
+      <p>Si tu solicitud fue rechazada, podrás realizar la postulación nuevamente, corrigiendo los errores.</p>
+
+      <ul>
+        <li>Una vez inscrito/a, podrás comprar tus tickets de manera online o presencial. El descuento se reflejará automáticamente si el tramo coincide con tu inscripción.</li>
+        <li>El beneficio es intransferible y permite solo dos trayectos diarios: ida y regreso, desde los puntos registrados.</li>
+      </ul>
+
+      <h3>Beneficio Estudiantil 2025</h3>
+      <p>Válido desde el 3 de marzo hasta el 19 de diciembre de 2025, en cualquier horario, de lunes a domingo.</p>
+    </div>
+
+    <!-- DIVISIÓN 2: Formulario -->
+    <div class="formulario">
+      <h2 style="color: #fff;">Completa y envía este formulario</h2>
+      <form enctype="multipart/form-data" method="POST" action="/php/procesar-formulario.php">
+        <label>Nombres</label>
+        <input type="text" name="nombres" required>
+
+        <label>Apellidos</label>
+        <input type="text" name="apellidos" required>
+
+        <label>Fecha de nacimiento</label>
+        <input type="date" name="fecha_nacimiento" >
+
+        <label>RUT</label>
+        <input type="text" name="rut" >
+
+        <label>Sexo</label>
+        <select name="sexo" >
+          <option value="">Seleccionar</option>
+          <option value="femenino">Femenino</option>
+          <option value="masculino">Masculino</option>
+          <option value="otro">Otro</option>
+        </select>
+
+        <label>Teléfono</label>
+        <input type="text" name="telefono" placeholder="9 0000 0000" >
+
+        <label>Email</label>
+        <input type="email" name="email" >
+
+        <label>Región residencial del estudiante</label>
+        <input type="text" name="region" >
+
+        <label>Comuna residencial del estudiante</label>
+        <input type="text" name="comuna" >
+
+        <label>Establecimiento educacional</label>
+        <input type="text" name="establecimiento" >
+
+        <label>Origen</label>
+        <input type="text" name="origen" >
+
+        <label>Destino</label>
+        <input type="text" name="destino" >
+
+        <label>Imagen de Cédula de Identidad</label>
+        <input type="file" name="cedula" accept=".jpg, .jpeg, .png, .pdf" >
+
+        <label>Certificado de alumno regular o matrícula</label>
+        <input type="file" name="certificado" accept=".jpg, .jpeg, .png, .pdf" >
+
+        <button type="submit">ENVIAR FORMULARIO</button>
+      </form>
+    </div>
+
+  </div>
+
+</body>
+</html>
