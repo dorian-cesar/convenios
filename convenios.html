@@ -19,10 +19,15 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content text-center p-4">
         <h5 class="modal-title mb-3">¿Qué tipo de convenio deseas postular?</h5>
-        <div>
-          <button class="btn btn-primary m-2" onclick="seleccionarConvenio('Estudiantes')">Para Estudiantes</button>
-          <button class="btn btn-secondary m-2" onclick="seleccionarConvenio('Adulto Mayor')">Adulto Mayor</button>
+        <div class="mb-3">
+          <select class="form-select" id="tipoConvenio" aria-label="Selecciona tipo de convenio">
+            <option selected disabled>Selecciona una opción</option>
+            <option value="Estudiantes">Para Estudiantes</option>
+            <option value="Adulto Mayor">Adulto Mayor</option>
+            <!-- Puedes agregar más opciones aquí cuando sea necesario -->
+          </select>
         </div>
+        <button class="btn btn-primary" onclick="seleccionarConvenio()">Continuar</button>
       </div>
     </div>
   </div>
@@ -116,6 +121,7 @@
     const regionSelect = document.getElementById("regionSelect");
     const comunaSelect = document.getElementById("comunaSelect");
 
+    
     // Llenar regiones
     function cargarRegiones() {
       regionesData.forEach(region => {
@@ -160,12 +166,20 @@
     };
 
     // Elegir convenio
-    function seleccionarConvenio(tipo) {
+    function seleccionarConvenio() {
+      const select = document.getElementById('tipoConvenio');
+      const tipo = select.value;
+      
+      if (!tipo || tipo === "Selecciona una opción") {
+        alert('Por favor selecciona un tipo de convenio');
+        return;
+      }
+
       tipoInput.value = tipo;
       titulo.innerText = `Postulación a Convenio: ${tipo}`;
       const certificadoDiv = document.getElementById("certificadoEstudiante");
       const certificadoInput = certificadoDiv.querySelector("input[name='certificado']");
-
+      
       if (tipo === 'Estudiantes') {
         texto.innerHTML = `
           <style>
@@ -216,7 +230,7 @@
             <div class="benefit-step">
               <h4 class="step-title" data-step="2">Revisión</h4>
               <p>
-                Al recibir la documentación, Turbus verificará si la solicitud cumple con los requisitos para optar al beneficio. 
+                Al recibir la documentación, Pullman Bus verificará si la solicitud cumple con los requisitos para optar al beneficio. 
                 Tu postulación será <span class="highlight">"Aprobada"</span> o <span class="highlight">"Rechazada"</span> (solo en caso de existir alguna anomalía en tus documentos).
                 <br><br>
                 Los resultados de tu postulación serán notificados vía e-mail.
@@ -227,7 +241,7 @@
               <h4 class="step-title" data-step="3">Validación</h4>
               <p>
                 Si tu solicitud fue <span class="highlight-approved">aprobada</span>, activaremos tus datos en nuestros sistemas en un plazo máximo de <strong>72 horas</strong> (posterior a la recepción del e-mail de confirmación). 
-                Luego de este plazo, podrás viajar con Turbus haciendo uso de este beneficio.
+                Luego de este plazo, podrás viajar con Pullman Bus haciendo uso de este beneficio.
                 <br><br>
                 Si tu solicitud fue <span class="highlight-rejected">rechazada</span>, podrás realizar la postulación nuevamente, corrigiendo el error por el cual no fuiste aceptado la primera vez.
               </p>
@@ -296,7 +310,7 @@
           <div class="benefit-step">
             <h4 class="step-title" data-step="2">Revisión</h4>
             <p>
-              Al recibir la documentación, Turbus verificará si la solicitud cumple con los requisitos para optar al beneficio. 
+              Al recibir la documentación, Pullman Bus verificará si la solicitud cumple con los requisitos para optar al beneficio. 
               Tu postulación será <span class="highlight">"Aprobada"</span> o <span class="highlight">"Rechazada"</span> (solo en caso de existir alguna anomalía en tus documentos).
               <br><br>
               Los resultados de tu postulación serán notificados vía e-mail.
@@ -307,7 +321,7 @@
             <h4 class="step-title" data-step="3">Validación</h4>
             <p>
               Si tu solicitud fue <span class="highlight-approved">aprobada</span>, activaremos tus datos en nuestros sistemas en un plazo máximo de <strong>72 horas</strong> 
-              (posterior a la recepción del e-mail de confirmación). Luego de este plazo, podrás viajar con Turbus haciendo uso de este beneficio.
+              (posterior a la recepción del e-mail de confirmación). Luego de este plazo, podrás viajar con Pullman Bus haciendo uso de este beneficio.
               <br><br>
               Si tu solicitud fue <span class="highlight-rejected">rechazada</span>, podrás realizar la postulación nuevamente, corrigiendo el error por el cual no fuiste aceptado la primera vez.
             </p>
@@ -327,7 +341,6 @@
             </p>
           </div>
         </div>
-
         `;
         certificadoDiv.classList.add("d-none"); // Ocultar
         certificadoInput.required = false; // No obligatorio

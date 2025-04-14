@@ -84,7 +84,7 @@ $mail = new PHPMailer(true);
             <p>Hemos recibido tu postulación al convenio <strong>$tipoConvenio</strong>.</p>
             <p>Validaremos tus documentos y te notificaremos el resultado vía e-mail en los próximos días.</p>
             <p>Gracias por postular. Si tienes dudas, contáctanos respondiendo este correo.</p>
-            <br><p>Atentamente,<br>Equipo Turbus</p>
+            <br><p>Atentamente,<br>Equipo Pullman Bus</p>
         ";
 
         $mail->send();
