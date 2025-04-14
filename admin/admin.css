@@ -122,3 +122,46 @@ body {
     background-color: #002f85; /* opcional: un tono más oscuro */
     color: #fff;
   }
+
+/* Dropdown personalizado */
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-btn {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    z-index: 1;
+    border-radius: 4px;
+}
+
+.dropdown-content a {
+    color: #333;
+    padding: 10px 14px;
+    text-decoration: none;
+    display: block;
+    border-bottom: 1px solid #ddd;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.custom-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.btn-csv {
+    background: #28a745;
+    color: white;
+    border: none;
+}

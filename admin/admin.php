@@ -13,6 +13,7 @@ if (!isset($_SESSION['user_id'])) {
     <title>Administración de Convenios</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"></script>
     <link rel="stylesheet" href="admin.css">
     <link rel="icon" type="image/svg+xml" href="../favicon-32x32.png" />
     
@@ -26,10 +27,20 @@ if (!isset($_SESSION['user_id'])) {
     <img src="https://i.gifer.com/ZZ5H.gif" alt="Cargando..." width="80">
     <p class="mt-2">Cargando...</p>
   </div>
-</div>
-    <img src="../image-removebg-preview.png" alt="" class="mb-3">
-    <div class="d-flex justify-content-end mb-3">
-    <button class="btn-rechazar" onclick="descargarCSV()" style="width:200px"> Descargar Aprobados CSV</button>
+    </div>
+        <img src="../image-removebg-preview.png" alt="" class="mb-3">
+        <div class="d-flex justify-content-end mb-3">
+        <div class="custom-dropdown">
+            <button class="btn-rechazar dropdown-btn" style="width: 240px;">
+                Descargar CSV Aprobados ▼
+            </button>
+            <div class="dropdown-content"style="width: 240px;">
+                <a href="#" onclick="descargarCSV('Estudiantes')">Estudiantes</a>
+                <a href="#" onclick="descargarCSV('Adulto Mayor')">Adulto Mayor</a>
+            </div>
+        
+
+    </div>
     </div>
         <h1 class="text-center mb-4">Convenios PullmanBus</h1>
         <div class="mb-3"><a href="php/logout.php" class="btn btn-rechazar">
@@ -72,39 +83,43 @@ if (!isset($_SESSION['user_id'])) {
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script>
-        function descargarCSV() {
-    fetch('./php/obtener_postulaciones.php')
-        .then(res => res.json())
-        .then(data => {
-            const aprobados = data.filter(est => est.estado === 'Aprobada');
+        function descargarCSV(tipoConvenio) {
+        fetch('./php/obtener_postulaciones.php')
+            .then(res => res.json())
+            .then(data => {
+                // Filtrado combinado (aprobados + tipo si se especifica)
+                const aprobados = data.filter(est => 
+                    est.estado === 'Aprobada' && 
+                    (!tipoConvenio || est.tipo_convenio === tipoConvenio)
+                );
 
-            if (aprobados.length === 0) {
-                alert('No hay registros aprobados para descargar.');
-                return;
-            }
+                if (aprobados.length === 0) {
+                    alert(`No hay registros aprobados${tipoConvenio ? ' para ' + tipoConvenio : ''}.`);
+                    return;
+                }
 
-            let csvContent = 'Nombre,RUT\n'; // Cabecera del CSV
-            aprobados.forEach(est => {
-                const nombreCompleto = `${est.nombres} ${est.apellidos}`;
-                csvContent += `"${nombreCompleto}","${est.rut}"\n`;
+                // Generar CSV
+                let csvContent = 'RUT\n';
+                aprobados.forEach(est => {
+                    csvContent += `"${est.rut}"\n`;
+                });
+
+                // Descargar
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `aprobados_${tipoConvenio ? tipoConvenio.replace(/\s+/g, '_') : 'todos'}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al generar el archivo');
             });
+        }
 
-            // Crear un blob y descargar
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'postulaciones_aprobadas.csv';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        })
-        .catch(error => {
-            console.error('Error al generar CSV:', error);
-            alert('Hubo un error al generar el archivo.');
-        });
-}
         
         function verDocumento(url) {
             const visor = document.getElementById('visorDocumento');
@@ -155,40 +170,48 @@ if (!isset($_SESSION['user_id'])) {
 
         function cargarPostulaciones() {
             fetch('./php/obtener_postulaciones.php')
-                .then(response => response.json())
-                .then(data => {
-                    const tabla = $('#tablaEstudiantes').DataTable();
-                    tabla.clear().draw();
+            .then(response => response.json())
+            .then(data => {
+                const tabla = $('#tablaEstudiantes').DataTable();
+                tabla.clear().draw();
 
-                    data.forEach(est => {
-                        // const estadoColor = est.estado === 'Aprobada' ? 'success' :
-                        //    est.estado === 'Rechazada' ? 'danger' : 'secondary';
-                        const estadoColor = est.estado === 'Rechazada' ? 'secondary' : 'primary';
+                data.forEach(est => {
+                    const estadoColor = est.estado === 'Rechazada' ? 'secondary' : 'primary';
+                    
+                    // Determinar si mostrar el botón de Certificado
+                    const mostrarCertificado = est.tipo_convenio !== 'Adulto Mayor';
+                    const botonCertificado = mostrarCertificado ? 
+                        `<button onclick="verDocumento('../php/${est.certificado_path}')" class="btn btn-sm btn-outline-primary btn-documento">Certificado</button>` : 
+                        '';
 
-                        tabla.row.add([
-                            est.id,
-                            `${est.nombres} ${est.apellidos}`,
-                            est.rut,
-                            est.email,
-                            `${est.origen} - ${est.destino}`,
-                            `<span class="badge-${estadoColor} ">${est.estado}</span>`,
-                            est.fecha_postulacion,
-                            est.tipo_convenio,
-                            `
-              <button onclick="verDocumento('../php/${est.cedula_path}')" class="btn btn-sm btn-outline-primary btn-documento">Cédula</button>
-              <button onclick="verDocumento('../php/${est.certificado_path}')" class="btn btn-sm btn-outline-primary btn-documento">Certificado</button>
-              `,
-                            `
-              <button onclick="actualizarEstado(${est.id}, 'Aprobada')" class="btn btn-sm btn-success btn-accion btn-aprobar">Aprobar</button>
-              <button onclick="actualizarEstado(${est.id}, 'Rechazada')" class="btn btn-sm btn-danger btn-accion btn-rechazar">Rechazar</button>
-              `
-                        ]).draw();
-                    });
+                    tabla.row.add([
+                        est.id,
+                        `${est.nombres} ${est.apellidos}`,
+                        est.rut,
+                        est.email,
+                        `${est.origen} - ${est.destino}`,
+                        `<span class="badge-${estadoColor}">${est.estado}</span>`,
+                        est.fecha_postulacion,
+                        est.tipo_convenio,
+                        `
+                        <button onclick="verDocumento('../php/${est.cedula_path}')" class="btn btn-sm btn-outline-primary btn-documento">Cédula</button>
+                        ${botonCertificado}
+                        `,
+                        `
+                        <button onclick="actualizarEstado(${est.id}, 'Aprobada')" class="btn btn-sm btn-success btn-accion btn-aprobar">Aprobar</button>
+                        <button onclick="actualizarEstado(${est.id}, 'Rechazada')" class="btn btn-sm btn-danger btn-accion btn-rechazar">Rechazar</button>
+                        `
+                    ]).draw();
                 });
+            });
         }
 
         $(document).ready(function () {
-            $('#tablaEstudiantes').DataTable();
+            $('#tablaEstudiantes').DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                }
+            });
             cargarPostulaciones();
         });
     </script>
