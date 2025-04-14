@@ -133,3 +133,7 @@ button:hover {
     text-align: center;
 }
     
+img.mb-3 {
+    display: block; 
+    margin-left: auto; /* Empuja la imagen a la derecha */
+  }

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Login</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon-32x32.png" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -34,17 +35,18 @@
     }
   </style>
 </head>
-<body class="d-flex justify-content-center align-items-center vh-100">
-  <img src="https://www.pullmanbus.cl/images/header-logo-yellow-arrow.svg" alt="" class="mb-3 mr-4">
+<body class="d-flex justify-content-center align-items-center vh-100">  
   
   <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
-    
+    <div class="text-center mb-4">
+      <img src="/image-removebg-preview.png" alt="Logo de la empresa" class="img-login" style="max-width: 300px; height: auto;">
+    </div>
     <h4 class="mb-4 text-center">Iniciar sesión</h4>
-    <form id="loginForm">
+    <form id="loginForm">      
       <div class="mb-3">
         <label for="email" class="form-label" >Correo electrónico</label>
         <input type="email" class="form-control" id="email" required />
-      </div>
+      </div>      
       <div class="mb-3">
         <label for="password" class="form-label">Contraseña</label>
         <input type="password" class="form-control" id="password" required />
