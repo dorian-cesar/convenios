@@ -14,11 +14,11 @@ if (!isset($_SESSION['user_id'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link rel="stylesheet" href="admin.css">
-    <link rel="icon" href="https://www.pullmanbus.cl/favicons/pullman-favicon.png">
+    <link rel="icon" type="image/svg+xml" href="../favicon-32x32.png" />
+    
 </head>
 
-<body class="p-4 " >
-    <img src="https://www.pullmanbus.cl/images/header-logo-yellow-arrow.svg" alt="" class="mb-3">
+<body class="p-4 " >    
     <div class="container">
     <div id="loader" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
  z-index: 1050;">
@@ -27,6 +27,7 @@ if (!isset($_SESSION['user_id'])) {
     <p class="mt-2">Cargando...</p>
   </div>
 </div>
+    <img src="../image-removebg-preview.png" alt="" class="mb-3">
     <div class="d-flex justify-content-end mb-3">
     <button class="btn-rechazar" onclick="descargarCSV()" style="width:200px"> Descargar Aprobados CSV</button>
     </div>

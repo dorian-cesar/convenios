@@ -9,6 +9,11 @@
     --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+img.mb-3 {
+    display: block; 
+    margin-left: auto; /* Empuja la imagen a la derecha */
+}
+
 body {
     margin: 0;
     font-family: var(--font-family);
@@ -131,9 +136,4 @@ button:hover {
     width: 90%;
     max-width: 600px;
     text-align: center;
-}
-    
-img.mb-3 {
-    display: block; 
-    margin-left: auto; /* Empuja la imagen a la derecha */
-  }
+}    
