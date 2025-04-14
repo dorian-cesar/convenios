@@ -57,6 +57,7 @@ if (!isset($_SESSION['user_id'])) {
                     <th>Origen - Destino</th>
                     <th>Estado</th>
                     <th>Fecha</th>
+                    <th>Tipo Convenio</th>
                     <th>Documentos</th>
                     <th>Acciones</th>
                 </tr>
@@ -172,6 +173,7 @@ if (!isset($_SESSION['user_id'])) {
                             `${est.origen} - ${est.destino}`,
                             `<span class="badge-${estadoColor} ">${est.estado}</span>`,
                             est.fecha_postulacion,
+                            est.tipo_convenio,
                             `
               <button onclick="verDocumento('../php/${est.cedula_path}')" class="btn btn-sm btn-outline-primary btn-documento">Cédula</button>
               <button onclick="verDocumento('../php/${est.certificado_path}')" class="btn btn-sm btn-outline-primary btn-documento">Certificado</button>
